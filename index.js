@@ -20,6 +20,8 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 client.connect(err => {
     const bookinglist = client.db("apartmentHunt").collection("bookinglist");
     const addRentHouse = client.db("apartmentHunt").collection("addrenthouse");
+    const admin = client.db("apartmentHunt").collection("admin");
+
     console.log('Database connected')
     app.post('/addBooking', (req, res) => {
         const data = req.body;
@@ -74,6 +76,13 @@ client.connect(err => {
             .toArray((err, documents) => {
                 res.send(documents);
             })
+    })
+    app.post('/isAdmin', (req, res) =>{
+        const email = req.body.email;
+        admin.find({email: email})
+        .toArray((err, admins) =>{
+            res.send(admins.length > 0)
+        })
     })
 
     app.patch('/update', (req, res) => {
